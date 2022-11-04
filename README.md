@@ -1,12 +1,12 @@
 Functionalities:
 
-Login
+1)Login
 
-Displaying movies based on release date from Public API
+2)Displaying movies based on release date from Public API
 
-Search(fetching movies by making API call)
+3)Search(fetching movies by making API call)
 
-User watchlist(Add & Delete movies) 
+4)User watchlist(Add & Delete movies) 
 
-Storing watchlist in MongoDB
+5)Storing watchlist in MongoDB
 
