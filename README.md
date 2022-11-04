@@ -1,3 +1,4 @@
+
 Functionalities:
 
 1)Login
@@ -9,4 +10,5 @@ Functionalities:
 4)User watchlist(Add & Delete movies) 
 
 5)Storing watchlist in MongoDB
+
 
