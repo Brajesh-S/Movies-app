@@ -22,4 +22,4 @@ const MoviesSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.export = mongoose.model('Movies', MoviesSchema);
+module.exports = mongoose.model('Movies', MoviesSchema);
