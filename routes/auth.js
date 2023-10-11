@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken');
 
 // Register
 router.post('/register' , [
-    body('username').isAlphanumeric().isLength({ min: 3, max: 20 }),
-    body('email').isEmail(),
-    body('password').isLength({ min: 6 }),
+    body('username').isAlphanumeric().isLength({ min: 3, max: 20 }).trim().escape(),
+    body('email').isEmail().trim().escape(),
+    body('password').isLength({ min: 6 }).trim().escape(),
 ], async (req, res) => {
     const errors = validationResult(req);
 
@@ -21,12 +21,16 @@ router.post('/register' , [
     try {
         const { username, email, password } = req.body;
 
+        const sanitizedUsername = username.trim();
+        const sanitizedEmail = email.trim();
+        const sanitizedPassword = password.trim();
+
         const salt = bcrypt.genSaltSync(saltRounds);
-        const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+        const hashedPassword = bcrypt.hashSync(sanitizedPassword, salt);
         
         const newUser = new User({
-            username,
-            email,
+            username: sanitizedUsername,
+            email: sanitizedEmail,
             password: hashedPassword,
     });
     
@@ -46,8 +50,8 @@ router.post('/register' , [
 });
 // Login
 router.post('/login', [
-    body('email').isEmail(),
-    body('password').isLength({ min: 6 }),
+    body('email').isEmail().trim().escape(),
+    body('password').isLength({ min: 6 }).trim().escape(),
 ], async (req, res) => { 
     const errors = validationResult(req);
 
