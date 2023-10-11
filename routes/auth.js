@@ -3,19 +3,15 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const validateInput = require('../middlewares/validateInput');
 
 // Register
 router.post('/register' , [
     body('username').isAlphanumeric().isLength({ min: 3, max: 20 }).trim().escape(),
     body('email').isEmail().trim().escape(),
     body('password').isLength({ min: 6 }).trim().escape(),
+    validateInput,
 ], async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     const saltRounds = 10;
 
     try {
@@ -52,22 +48,10 @@ router.post('/register' , [
 router.post('/login', [
     body('email').isEmail().trim().escape(),
     body('password').isLength({ min: 6 }).trim().escape(),
+    validateInput,
 ], async (req, res) => { 
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-
     try {
         const user = await User.findOne({ email: req.body.email });
-        
-          const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
 
         if (!user) {
             return res.status(401).json('Invalid email or password');
