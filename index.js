@@ -8,13 +8,18 @@ const userRoute = require('./routes/users')
 dotenv.config();
 
 mongoose
+    .set('strictQuery', false)
     .connect(process.env.MONGO_URL)
-    .then(() => console.log('db connection successfull'))
-    .catch((err) => console.log(err))
+    .then(() => {
+        console.log('db connection successfull');
+        app.use(express.json());
+        app.use('/api/auth', authRoute);
+        app.use('/api/users', userRoute);
 
-app.use(express.json());
-app.use('/api/auth', authRoute);
-app.use('/api/users', userRoute);
+        const port = process.env.PORT || 3000;
+        app.listen(port, () => console.log(`${port}`));
+    })
+    .catch((err) => console.log(err));
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`${port}`));
+
+

@@ -1,33 +1,51 @@
 const router = require('express').Router();
 const User = require('../models/User');
-const CryptoJS = require("crypto-js");
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// Register
 router.post('/register', async (req, res) => {
-    const newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: CryptoJS.AES.encrypt(req.body.password, process.env.SECRET_KEY).toString(),
-    });
+    const saltRounds = 10;
+
     try {
-        const user = await newUser.save();
-        res.status(201).json(user);
-        } 
-    catch(err) {
-        res.status(500).json(err);
+        const { username, email, password } = req.body;
+
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+        
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
+    });
+    
+    const savedUser = await newUser.save();
+
+    const responseUser = {
+        _id: savedUser._id,
+        username: savedUser.username,
+        email: savedUser.email
+    }
+
+    res.status(201).json(responseUser);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Internal Server Error' });
     }
 });
-
+// Login
 router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });
-        !user && res.status(401).json('Wrong username or password');
         
-        const bytes  = CryptoJS.AES.decrypt(user.password, process.env.SECRET_KEY);
-        const originalPassword = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)).toString();
-       
-        if (originalPassword !== req.body.password) {
-            return res.status(401).json('Wrong username or password')
+        if (!user) {
+            return res.status(401).json('Invalid email or password');
+        } 
+        
+        const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+        
+        if (!isPasswordValid) {
+            return res.status(401).json('Invalid email or password');
         }
             const accessToken = jwt.sign(
                 { id: user._id, isAdmin: user.isAdmin },
@@ -39,7 +57,8 @@ router.post('/login', async (req, res) => {
 
         return res.status(200).json({ ...info, accessToken });
     }catch (err) {
-        res.status(500).json(err);
+        console.error(err);
+        return res.status(500).json(err);
     }
 });
 
