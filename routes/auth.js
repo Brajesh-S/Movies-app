@@ -4,6 +4,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validateInput = require('../middlewares/validateInput');
+const errorHandler = require('../middlewares/errorHandler');
 
 // Register
 router.post('/register' , [
@@ -11,7 +12,7 @@ router.post('/register' , [
     body('email').isEmail().trim().escape(),
     body('password').isLength({ min: 6 }).trim().escape(),
     validateInput,
-], async (req, res) => {
+], async (req, res, next) => {
     const saltRounds = 10;
 
     try {
@@ -40,8 +41,7 @@ router.post('/register' , [
 
     res.status(201).json(responseUser);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ err: 'Internal Server Error' });
+        next(err);
     }
 });
 // Login
@@ -49,23 +49,31 @@ router.post('/login', [
     body('email').isEmail().trim().escape(),
     body('password').isLength({ min: 6 }).trim().escape(),
     validateInput,
-], async (req, res) => { 
+], async (req, res, next) => { 
     try {
         const user = await User.findOne({ email: req.body.email });
 
         if (!user) {
-            return res.status(401).json('Invalid email or password');
+            const error = new Error('Invalid email or password');
+            error.statusCode = 401;
+            
+            next(error);
+            return;
         } 
         
         const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
         
         if (!isPasswordValid) {
-            return res.status(401).json('Invalid email or password');
+            const error = new Error('Invalid email or password');
+            error.statusCode = 401;
+
+            next(error);
+            return;
         }
             const accessToken = jwt.sign(
                 { id: user._id, isAdmin: user.isAdmin },
                 process.env.SECRET_KEY, 
-                { algorithm: 'RS256', expiresIn: "50d" }
+                { algorithm: 'RS256', expiresIn: "1d" }
             );
 
         const { password, ...info } = user._doc;
@@ -73,8 +81,8 @@ router.post('/login', [
         return res.status(200).json({ ...info, accessToken });
     }catch (err) {
         console.error(err);
-        return res.status(500).json(err);
+        next(err);
     }
 });
-
+router.use(errorHandler);
 module.exports = router;
