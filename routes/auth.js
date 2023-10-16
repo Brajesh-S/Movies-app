@@ -1,13 +1,12 @@
 const path = require('path');
 const fs = require('fs');
 const router = require('express').Router();
-const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const validateInput = require('../middlewares/validateInput');
 const errorHandler = require('../middlewares/errorHandler');
 const registerRequest = require("../models/requests/registerRequest")
+const loginRequest = require('../models/requests/loginRequest')
 
 // Construct paths to RSA key files using __dirname
 const privateKeyPath = path.join(__dirname, 'private.pem');
@@ -22,10 +21,9 @@ router.post('/register' , registerRequest, async (req, res, next) => {
 
     try {
         const { username, email, password } = req.body;
-
-        const sanitizedUsername = username.trim();
-        const sanitizedEmail = email.trim();
-        const sanitizedPassword = password.trim();
+        const sanitizedUsername = username.trim(),
+              sanitizedEmail = email.trim(), 
+              sanitizedPassword = password.trim();
 
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(sanitizedPassword, salt);
@@ -50,11 +48,9 @@ router.post('/register' , registerRequest, async (req, res, next) => {
     }
 });
 // Login
-router.post('/login', [
-    body('email').isEmail().trim().escape(),
-    body('password').isLength({ min: 6 }).trim().escape(),
-    validateInput,
-], async (req, res, next) => { 
+router.post('/login', loginRequest
+   
+, async (req, res, next) => { 
     try {
         const user = await User.findOne({ email: req.body.email });
 
