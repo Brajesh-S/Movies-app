@@ -7,6 +7,11 @@ const jwt = require('jsonwebtoken');
 const errorHandler = require('../middlewares/errorHandler');
 const registerRequest = require("../models/requests/registerRequest")
 const loginRequest = require('../models/requests/loginRequest')
+const dotenv = require('dotenv');
+const responseHelper = require('../helpers/responseHelpers')
+const checkEmailUniqueness = require('../middlewares/emailValidation');
+
+dotenv.config();
 
 // Construct paths to RSA key files using __dirname
 const privateKeyPath = path.join(__dirname, 'private.pem');
@@ -16,15 +21,15 @@ const privateKey = fs.readFileSync(privateKeyPath);
 const publicKey = fs.readFileSync(publicKeyPath);
 
 // Register
-router.post('/register' , registerRequest, async (req, res, next) => {
-    const saltRounds = 10;
+router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res, next) => {
+    
 
     try {
         const { username, email, password } = req.body;
         const sanitizedUsername = username.trim(),
               sanitizedEmail = email.trim(), 
               sanitizedPassword = password.trim();
-
+        const saltRounds = process.env.SALT_Rounds || 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(sanitizedPassword, salt);
         
@@ -57,7 +62,7 @@ router.post('/login', loginRequest
         if (!user) {
             const error = new Error('Invalid email or password');
             error.statusCode = 401;
-
+            console.error(error)
             next(error);
             return;
         } 
@@ -67,7 +72,7 @@ router.post('/login', loginRequest
         if (!isPasswordValid) {
             const error = new Error('Invalid email or password');
             error.statusCode = 401;
-
+            
             next(error);
             return;
         }
@@ -76,21 +81,12 @@ router.post('/login', loginRequest
             const options = { algorithm: 'RS256', expiresIn: '1d' };
             const accessToken = jwt.sign(payload, privateKey, options);
 
-             // Verify Token
-        try {
-            const decoded = jwt.verify(accessToken, publicKey, { algorithms: ['RS256'] });
-            console.log(decoded);
-        } catch (error) {
-            console.error('Token verification failed:', error.message);
-            // Handle token verification failure, e.g., return an error response
-            res.status(401).json({ error: 'Invalid token' });
-            return;
-        }
 
         // Send Response
         const { password, ...info } = user._doc;
 
-        return res.status(200).json({ ...info, accessToken });
+        const response = responseHelper.formatResponse({ ...info, accessToken }, false, null);
+        res.status(200).json(response);
     }catch (err) {
         console.error(err);
         next(err);

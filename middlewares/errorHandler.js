@@ -3,9 +3,8 @@ const errorHandler = (err, req, res, next) => {
 
     let statusCode = 500; 
     let message = "Internal Server Error";
-
-    
-    if (err.statusCode === 401) {
+     
+    if (err && err.statusCode === 401) { // Check if err and err.statusCode exist
         statusCode = 401;
         message = "Unauthorized";
     }

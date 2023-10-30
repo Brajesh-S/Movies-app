@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const router = require('express').Router();
 const { body } = require('express-validator');
 const User = require('../models/User');
@@ -5,83 +7,92 @@ const bcrypt = require('bcrypt');
 const verify = require('../verifyToken');
 const validateInput = require('../middlewares/validateInput');
 const errorHandler = require('../middlewares/errorHandler'); 
+const helmet = require('helmet');
+const { formatResponse } = require('../helpers/responseHelpers');
+const checkEmailUniqueness = require('../middlewares/emailValidation');
+
+
+router.use(helmet());
 
 //Update User
-router.put('/:id', verify, [
-    body('username').isAlphanumeric().isLength({ min: 3, max: 20 }).trim().escape(),
-    body('email').isEmail().trim().escape()
-    .custom(async (value) => {
-        // Checks if the email already exists in the database
-        const existingUser = await User.findOne({ email: value });
-        if (existingUser) {
-          throw new Error('Email address is already in use');
-        }
-        return true;
-      }),
-    body('password').isLength({ min: 6 }).trim().escape(),
+router.put('/:id', verify,  
+    body('username').isAlphanumeric().isLength({ min: 3, max: 20 }).trim().escape(),   
     validateInput,
-], async (req, res) => {
+ async (req, res, next) => {
     try {
-        if (req.user.id === req.params.id || req.user.isAdmin) {
-        
-                if (req.body.password) {
-                    const saltRounds = 10;
-                    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-                
-                    req.body.password = hashedPassword
-                }
-            
-                const updatedUser = await User.findByIdAndUpdate(
-                    req.params.id, 
-                    { $set: req.body },
-                    { new: true }
-                ); 
-            res.status(200).json(updatedUser);  
+        if (req.userId === req.params.id || req.user.isAdmin) {
+            const updateUser = { username: req.body.username };
+            const updatedUser = await User.findByIdAndUpdate(
+                req.params.id, 
+                { $set: updateUser },
+                { new: true }
+            );
+            const response = formatResponse(updatedUser, false, 'User updated successfully');  
+            res.status(200).json(response)
             
             } else {
-                res.status(403).json('You can update only your account...')
-            }
-            } catch (err){
-                //Passing the error to errorHandler
+            const response =  formatResponse(null, true, 'You can update only your account...');
+            res.status(403).json(response)
+        }
+       
+    } catch (err){
                 next(err)
             }
-   
+            
 });
 // Password Update
 router.put('/update-password/:id', verify, [
     body('newPassword').isLength({ min: 6 }).trim().escape(),
+    body('email').isEmail().normalizeEmail(),
     validateInput,
 ], async (req, res, next) => {
     try {
-        const userId = req.params.id;
-        const { newPassword } = req.body;
+        const { newPassword, email } = req.body;
 
-        // Validate that userId is the same as the authenticated user's id
-        if (req.user.id !== userId) {
-            return res.status(403).json('You can update only your account...');
-        }
+        const existingUser = await User.findOne({ email });
 
-        // Hash the new password
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        if (!existingUser) {
+            return res.status(400).json(response);
+          } else {
+      
+            // Validate that userId is the same as the authenticated user's id
+            if (req.userId !== req.params.id) {
+                const response = formatResponse(null, true, 'You can update only your account...');
+                res.status(403).json(response)
+            } else {
+                
+                
+                // Hash the new password
+                const salt = bcrypt.genSaltSync(process.env.SALT_Rounds || 10);
+                const hashedPassword = bcrypt.hashSync(newPassword, salt);
 
-        // Update the user's password in the database
-        await User.findByIdAndUpdate(userId, { $set: { password: hashedPassword } });
 
-        res.status(200).json('Password updated successfully');
+                // Update the user's password in the database
+                await User.findByIdAndUpdate(req.userId, { $set: { password: hashedPassword } });
+
+                const response = formatResponse(null, false, 'Password updated successfully');
+                res.status(200).json(response)
+                //console.log("SALT_Rounds:", process.env.SALT_Rounds);
+            }
+        }    
     } catch (err) {
-        next(err);
-    }
-});
+        console.error("Error hashing password:", err);
+        res.status(500).json({ error: true, message: "Internal Server Error" });
+        return;
+            //next(err);
+        }
+} );
 //Delete User
 router.delete('/:id', verify, validateInput, async (req, res) => {
     try {
         if (req.user.id === req.params.id || req.user.isAdmin) {
                 await User.findByIdAndDelete(req.params.id);   
-                res.status(200).json('User has been deleted!!!!!');   
+                const response = formatResponse(null, false, 'User has been deleted!');
+                res.status(200).json(response);  
         } else {
-            res.status(403).json('You can delete only your account...')
-            }
+                const response = formatResponse(null, true, 'You can delete only your account...');
+                res.status(403).json(response);
+               }
     } catch (err) {
             next(err);
     }
@@ -91,7 +102,8 @@ router.get('/find/:id', async (req, res) => {
         try{
                 const user = await User.findById(req.params.id);
                 const { password, ...info } = user._doc;
-                res.status(200).json(info)
+                const response = formatResponse(info, false, null);
+                res.status(200).json(response);
         }    
         catch (err) {
             next(err);
@@ -103,9 +115,11 @@ router.get('/', verify, async (req, res) => {
     try {
         if ( req.user.isAdmin ) {
                 const users = query ? await User.find().sort({_id:-1}).limit(10) : await User.find();
-                res.status(200).json(users);   
+                const response = formatResponse(users, false, null);
+                res.status(200).json(response); 
             }  else {
-                res.status(403).json('You are not allowed to see all users!!');
+                const response = formatResponse(null, true, 'You are not allowed to see all users!!');
+                res.status(403).json(response);
             }
             } catch (err) {
                 next(err)
