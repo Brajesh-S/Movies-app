@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken')
 const fs = require('fs');
 const publicKeyPath = path.join(__dirname, 'public.pem');
 const publicKey = fs.readFileSync(publicKeyPath);
-const responseHelper = require('./helpers/responseHelpers');
-const errorHandler = require('./middlewares/errorHandler');
+const responseHelper = require('../shared/helpers/responseHelpers');
+const errorHandler = require('../shared/middlewares/errorHandler');
 
 function verify(req, res, next)  {
     const authHeader = req.headers.authorization;

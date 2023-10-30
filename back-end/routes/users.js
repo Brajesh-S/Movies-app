@@ -4,12 +4,12 @@ const router = require('express').Router();
 const { body } = require('express-validator');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const verify = require('../verifyToken');
-const validateInput = require('../middlewares/validateInput');
-const errorHandler = require('../middlewares/errorHandler'); 
+const verify = require('../../shared/verifyToken');
+const validateInput = require('../../shared/middlewares/validateInput');
+const errorHandler = require('../../shared/middlewares/errorHandler'); 
 const helmet = require('helmet');
-const { formatResponse } = require('../helpers/responseHelpers');
-const checkEmailUniqueness = require('../middlewares/emailValidation');
+const { formatResponse } = require('../../shared/helpers/responseHelpers');
+const checkEmailUniqueness = require('../../shared/middlewares/emailValidation');
 
 
 router.use(helmet());

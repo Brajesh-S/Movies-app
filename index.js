@@ -4,10 +4,10 @@ const app = express();
 
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const authRoute = require("./routes/auth");
-const userRoute = require('./routes/users')
+const authRoute = require("./back-end/routes/auth");
+const userRoute = require('./back-end/routes/users')
 
-const errorHandler = require('./middlewares/errorHandler');
+const errorHandler = require('./shared/middlewares/errorHandler');
 
 dotenv.config();
 

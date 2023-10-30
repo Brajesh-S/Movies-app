@@ -1,15 +1,15 @@
 const path = require('path');
 const fs = require('fs');
 const router = require('express').Router();
-const User = require('../models/User');
+const User = require('../../back-end/models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const errorHandler = require('../middlewares/errorHandler');
-const registerRequest = require("../models/requests/registerRequest")
-const loginRequest = require('../models/requests/loginRequest')
+const errorHandler = require('../../shared/middlewares/errorHandler');
+const registerRequest = require("../../back-end/models/requests/registerRequest")
+const loginRequest = require('../../back-end/models/requests/loginRequest')
 const dotenv = require('dotenv');
-const responseHelper = require('../helpers/responseHelpers')
-const checkEmailUniqueness = require('../middlewares/emailValidation');
+const responseHelper = require('../../shared/helpers/responseHelpers')
+const checkEmailUniqueness = require('../../shared/middlewares/emailValidation');
 
 dotenv.config();
 
