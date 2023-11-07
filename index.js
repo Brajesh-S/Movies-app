@@ -1,6 +1,6 @@
 const express = require('express'); 
 const app = express();
-
+const cors = require('cors');
 
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -10,6 +10,13 @@ const userRoute = require('./back-end/routes/users')
 const errorHandler = require('./shared/middlewares/errorHandler');
 
 dotenv.config();
+
+app.use(cors({
+    origin:["http://localhost:3001"],
+    methods:['POST' , 'GET'],
+    credentials: true
+})); 
+     
 
 mongoose
     .set('strictQuery', false)
@@ -23,6 +30,7 @@ mongoose
         
         app.use(errorHandler)
 
+                                                                  
         const port = process.env.PORT || 3000;
         app.listen(port, () => console.log(`${port}`));
     })

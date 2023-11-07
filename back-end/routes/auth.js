@@ -23,18 +23,20 @@ const publicKey = fs.readFileSync(publicKeyPath);
 // Register
 router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res, next) => {
     
-
     try {
-        const { username, email, password } = req.body;
-        const sanitizedUsername = username.trim(),
+        const { firstName, lastName, email, password } = req.body;
+              const sanitizedFirstName = firstName.trim(),
+              sanitizedLastName = lastName.trim(),
               sanitizedEmail = email.trim(), 
               sanitizedPassword = password.trim();
+
         const saltRounds = process.env.SALT_Rounds || 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(sanitizedPassword, salt);
         
         const newUser = new User({
-            username: sanitizedUsername,
+            firstName: sanitizedFirstName,
+            lastName: sanitizedLastName,
             email: sanitizedEmail,
             password: hashedPassword,
     });
@@ -43,7 +45,8 @@ router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res,
 
     const responseUser = {
         _id: savedUser._id,
-        username: savedUser.username,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName,
         email: savedUser.email
     }
 
@@ -81,6 +84,8 @@ router.post('/login', loginRequest
             const options = { algorithm: 'RS256', expiresIn: '1d' };
             const accessToken = jwt.sign(payload, privateKey, options);
 
+            // Save the access token to local storage
+            localStorage.setItem('accessToken', accessToken);
 
         // Send Response
         const { password, ...info } = user._doc;

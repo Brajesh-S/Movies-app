@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+// const navigate = useNavigate();
 
-
-export const Login = () => {
+export const Login = (props) => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('')
 
@@ -18,7 +19,7 @@ export const Login = () => {
     };    
     
     return (
-        <>
+        <div className = "auth-form-container">
         <form onSubmit={handleSubmit}>
             <label htmlFor="email">Email</label>
             <input
@@ -39,9 +40,10 @@ export const Login = () => {
                 onChange={handlePasswordChange}
             />
             <button type="submit">Login</button>
+           
         </form>
-        <button>Don't have an account? Register here.</button>
-    </>
+        <button onClick={() => props.onFormSwitch('register')}>Don't have an account? Register here. </button>
+    </div>
     );
 };
 
