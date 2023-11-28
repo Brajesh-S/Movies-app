@@ -10,6 +10,7 @@ const userRoute = require('./back-end/routes/users')
 const errorHandler = require('./shared/middlewares/errorHandler');
 
 dotenv.config();
+app.use(express.json());
 
 app.use(cors({
     origin:["http://localhost:3001"],
@@ -23,7 +24,7 @@ mongoose
     .connect(process.env.MONGO_URL)
     .then(() => {
         console.log('db connection successfull');
-        app.use(express.json());
+        
         
         app.use('/api/auth', authRoute);
         app.use('/api/users',  userRoute);

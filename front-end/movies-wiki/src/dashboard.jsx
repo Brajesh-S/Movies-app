@@ -1,10 +1,16 @@
 import React from 'react';
+import { useAuth } from './authContext';
 
 const Dashboard = () => {
+    const { logout } = useAuth();
+
+    const handleLogout = () => {
+      logout();
+    };
     return (
         <div>
             <h1>Welcome to your Dashboard!</h1>
-            {/* Add more components here to display relevant data to the user */}
+            <button onClick={handleLogout}>Logout</button>
         </div>
     );
 };

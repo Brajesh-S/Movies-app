@@ -1,4 +1,6 @@
 const path = require('path');
+const express = require('express'); 
+const app = express();
 const fs = require('fs');
 const router = require('express').Router();
 const User = require('../../back-end/models/User');
@@ -12,6 +14,7 @@ const responseHelper = require('../../shared/helpers/responseHelpers')
 const checkEmailUniqueness = require('../../shared/middlewares/emailValidation');
 
 dotenv.config();
+
 
 // Construct paths to RSA key files using __dirname
 const privateKeyPath = path.join(__dirname, 'private.pem');
@@ -55,12 +58,15 @@ router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res,
         next(err);
     }
 });
+app.use(express.json());
 // Login
 router.post('/login', loginRequest
    
 , async (req, res, next) => { 
     try {
+        console.log("Requesting email:", req.body.email);
         const user = await User.findOne({ email: req.body.email });
+        
 
         if (!user) {
             const error = new Error('Invalid email or password');
@@ -71,6 +77,7 @@ router.post('/login', loginRequest
         } 
         
         const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+        console.log("server side:", user.password,"client side:", req.body.password)
         
         if (!isPasswordValid) {
             const error = new Error('Invalid email or password');
@@ -84,12 +91,9 @@ router.post('/login', loginRequest
             const options = { algorithm: 'RS256', expiresIn: '1d' };
             const accessToken = jwt.sign(payload, privateKey, options);
 
-            // Save the access token to local storage
-            localStorage.setItem('accessToken', accessToken);
 
-        // Send Response
+        // Sending Response with Access token
         const { password, ...info } = user._doc;
-
         const response = responseHelper.formatResponse({ ...info, accessToken }, false, null);
         res.status(200).json(response);
     }catch (err) {

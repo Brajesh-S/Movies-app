@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-export const Register = (props) => {
+export const Register = () => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('');
 
+    const navigate = useNavigate();
+   
+
     const handleSubmit = (e) => {
         e.preventDefault();
-    
+        
         const userData = {
             firstName:firstName,
             lastName:lastName,
@@ -20,6 +24,7 @@ export const Register = (props) => {
           axios.post('http://localhost:3000/api/auth/register', userData)
           .then(response => {
             console.log(response.data);
+            
           })
           .catch(error => {
             if (error.response) {
@@ -32,12 +37,6 @@ export const Register = (props) => {
             }
           });
     };
-    // const validateEmail = (email) => {
-    // //     // A simple email format validation
-    // //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // //     return emailRegex.test(email);
-    // // };
-    
 
     return (
         <div className = "auth-form-container">
@@ -86,7 +85,7 @@ export const Register = (props) => {
             </form>
             
        
-            <button onClick={() => props.onFormSwitch('login')}>Already have an account? Login here.</button>
+            <button onClick={() => navigate('/')}>Already have an account? Login here.</button>
 
             </div>
             )

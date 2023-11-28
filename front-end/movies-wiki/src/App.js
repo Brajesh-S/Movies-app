@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './authContext'
 import axios from 'axios';
 import './App.css';
 import { Login } from "./Login";
 import { Register } from "./Register";
 import Dashboard from './dashboard';
 
+
 function App() {
   const [currentForm, setCurrentForm] = useState("login"); // Default to login
+
   const [data, setData] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const toggleForm = (formName) => {
-    // Toggle between login and register forms
+    console.log("toogling form:",formName )
     setCurrentForm(formName);
   };
 
@@ -38,36 +41,19 @@ function App() {
 
 
   return (
-    <div className="App">
-      {
-        currentForm === "login" ? <Login onFormSwitch={toggleForm} /> : <Register onFormSwitch={toggleForm} />
-      /* <BrowserRouter> {
-        <Routes>
-          <Route
-            path="/login"
-            element={loggedIn ? <Navigate to="/dashboard" /> : <Login currentForm={currentForm} onFormSwitch={toggleForm} />}
-          />
-          <Route
-            path="/register"
-            element={<Register onFormSwitch={toggleForm} />}
-          />
-          <Route
-            path="/"
-            element={loggedIn ? <Dashboard /> : <Navigate to="/login" />}
-          />
-        </Routes>
-        }
-      </BrowserRouter> */}
-      
-    {/* <div>
-      {data.map(item => (
-        <div key={item._id}>
-          <h3>{item.name}</h3>
-          <p>{item.email}</p>
-        </div>
-      ))}
-    </div> */}
-</div>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Login onFormSwitch={toggleForm} />} />
+            <Route path="/register" element={<Register onFormSwitch={toggleForm} />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+          
+          
+  </div>
+  </BrowserRouter>
+</AuthProvider>
   );
 }
 
