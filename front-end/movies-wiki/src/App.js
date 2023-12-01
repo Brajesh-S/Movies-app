@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './authContext'
 import axios from 'axios';
-import './App.css';
+// import './App.css';
 import { Login } from "./Login";
 import { Register } from "./Register";
 import Dashboard from './dashboard';
+
 
 
 function App() {

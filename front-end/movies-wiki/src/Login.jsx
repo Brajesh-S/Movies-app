@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useAuth } from './authContext'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Login.css';
+
 
 
 
@@ -72,20 +74,29 @@ const handleLogin = async (userData) => {
   };
   
     return (
+      <div className="login-page">
+        <img className="fullscreen-bg-img" src={require("./homepage.jpg")} alt=""/>
+
+        <div className="login-image">
+          <img src={require("./Image.png")} alt=""/>
+        </div>
+
         <div className = "auth-form-container">
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="email">Email</label>
-            <input
+{/* 
+        <img src={require("./Image(7).png")} alt=""/> */}
+        <form className="login-form" onSubmit={handleSubmit}>
+            <label htmlFor="email" className="form-label">Email</label>
+            <input className="form-input"
                 value={email}
                 type="email"
-                placeholder="Type..."
+                placeholder=""
                 id="email"
                 name="email"
                 onChange={handleEmailChange}
                 autoComplete="email"
             />
             <label htmlFor="password">Password</label>
-            <input
+            <input className="form-input"
                 value={password}
                 type="password"
                 placeholder=""
@@ -94,10 +105,11 @@ const handleLogin = async (userData) => {
                 onChange={handlePasswordChange}
                 autoComplete="current-password"
             />
-            <button type="submit">Login</button>
-           
+            <button type="submit" className="submit-button">Login</button>
         </form>
-        <button onClick={() => navigate('/register')}>Don't have an account? Register here. </button>
+        
+        <button onClick={() => navigate('/register')} className="register-button">Don't have an account? Register here. </button>
+        </div>
     </div>
     );
 };
