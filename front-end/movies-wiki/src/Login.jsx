@@ -74,43 +74,44 @@ const handleLogin = async (userData) => {
   };
   
     return (
-      <div className="login-page">
-        <img className="fullscreen-bg-img" src={require("./homepage.jpg")} alt=""/>
+      
+        <div className="login-page">
+          <img className="fullscreen-bg-img" src={require("./homepage.jpg")} alt=""/>
 
-        <div className="login-image">
-          <img src={require("./Image.png")} alt=""/>
-        </div>
+          <div className="login-logo">
+            <img src={require("./Image4.png")} alt=""/>
+          </div>
 
-        <div className = "auth-form-container">
-{/* 
-        <img src={require("./Image(7).png")} alt=""/> */}
-        <form className="login-form" onSubmit={handleSubmit}>
-            <label htmlFor="email" className="form-label">Email</label>
-            <input className="form-input"
-                value={email}
-                type="email"
-                placeholder=""
-                id="email"
-                name="email"
-                onChange={handleEmailChange}
-                autoComplete="email"
-            />
-            <label htmlFor="password">Password</label>
-            <input className="form-input"
-                value={password}
-                type="password"
-                placeholder=""
-                id="password" 
-                name="password" 
-                onChange={handlePasswordChange}
-                autoComplete="current-password"
-            />
-            <button type="submit" className="submit-button">Login</button>
-        </form>
-        
-        <button onClick={() => navigate('/register')} className="register-button">Don't have an account? Register here. </button>
-        </div>
-    </div>
+          <div className = "auth-form-container content-container">
+
+          <form className="login-form" onSubmit={handleSubmit}>
+              <label htmlFor="email" className="form-label">Email</label>
+              <input className="form-input"
+                  value={email}
+                  type="email"
+                  placeholder=""
+                  id="email"
+                  name="email"
+                  onChange={handleEmailChange}
+                  autoComplete="email"
+              />
+              <label htmlFor="password">Password</label>
+              <input className="form-input"
+                  value={password}
+                  type="password"
+                  placeholder=""
+                  id="password" 
+                  name="password" 
+                  onChange={handlePasswordChange}
+                  autoComplete="current-password"
+              />
+              <button type="submit" className="submit-button">Login</button>
+          </form>
+          
+          <button onClick={() => navigate('/register')} className="register-button">Don't have an account? Register here. </button>
+          </div>
+      </div>
+    
     );
 };
 
