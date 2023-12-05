@@ -1,4 +1,6 @@
 const path = require('path');
+const express = require('express'); 
+const app = express();
 const fs = require('fs');
 const router = require('express').Router();
 const User = require('../../back-end/models/User');
@@ -13,6 +15,7 @@ const checkEmailUniqueness = require('../../shared/middlewares/emailValidation')
 
 dotenv.config();
 
+
 // Construct paths to RSA key files using __dirname
 const privateKeyPath = path.join(__dirname, 'private.pem');
 const publicKeyPath = path.join(__dirname, 'public.pem');
@@ -23,18 +26,20 @@ const publicKey = fs.readFileSync(publicKeyPath);
 // Register
 router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res, next) => {
     
-
     try {
-        const { username, email, password } = req.body;
-        const sanitizedUsername = username.trim(),
+        const { firstName, lastName, email, password } = req.body;
+              const sanitizedFirstName = firstName.trim(),
+              sanitizedLastName = lastName.trim(),
               sanitizedEmail = email.trim(), 
               sanitizedPassword = password.trim();
+
         const saltRounds = process.env.SALT_Rounds || 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(sanitizedPassword, salt);
         
         const newUser = new User({
-            username: sanitizedUsername,
+            firstName: sanitizedFirstName,
+            lastName: sanitizedLastName,
             email: sanitizedEmail,
             password: hashedPassword,
     });
@@ -43,7 +48,8 @@ router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res,
 
     const responseUser = {
         _id: savedUser._id,
-        username: savedUser.username,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName,
         email: savedUser.email
     }
 
@@ -52,12 +58,15 @@ router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res,
         next(err);
     }
 });
+app.use(express.json());
 // Login
 router.post('/login', loginRequest
    
 , async (req, res, next) => { 
     try {
+        console.log("Requesting email:", req.body.email);
         const user = await User.findOne({ email: req.body.email });
+        
 
         if (!user) {
             const error = new Error('Invalid email or password');
@@ -68,6 +77,7 @@ router.post('/login', loginRequest
         } 
         
         const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+        console.log("server side:", user.password,"client side:", req.body.password)
         
         if (!isPasswordValid) {
             const error = new Error('Invalid email or password');
@@ -82,9 +92,8 @@ router.post('/login', loginRequest
             const accessToken = jwt.sign(payload, privateKey, options);
 
 
-        // Send Response
+        // Sending Response with Access token
         const { password, ...info } = user._doc;
-
         const response = responseHelper.formatResponse({ ...info, accessToken }, false, null);
         res.status(200).json(response);
     }catch (err) {
