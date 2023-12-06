@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from './authContext'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Login.css';
+import './Login1.css';
 
 
 
@@ -78,12 +78,12 @@ const handleLogin = async (userData) => {
         <div className="login-page">
           <img className="fullscreen-bg-img" src={require("./homepage.jpg")} alt=""/>
 
+          
+          
+          <div className = "auth-form-container">
           <div className="login-logo">
             <img src={require("./Image4.png")} alt=""/>
           </div>
-
-          <div className = "auth-form-container content-container">
-
           <form className="login-form" onSubmit={handleSubmit}>
               <label htmlFor="email" className="form-label">Email</label>
               <input className="form-input"
@@ -111,6 +111,7 @@ const handleLogin = async (userData) => {
           <button onClick={() => navigate('/register')} className="register-button">Don't have an account? Register here. </button>
           </div>
       </div>
+      
     
     );
 };
