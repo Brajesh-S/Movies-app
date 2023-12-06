@@ -25,6 +25,7 @@
     flex-direction: column;
     justify-content: space-between;
     min-width: 30vh;
+    font-weight:700;
    }
   @media screen and (min-width: 600px) {
     .auth-form-container {
@@ -33,7 +34,7 @@
        border-radius: 10px;
        margin: 0.5rem;
        opacity: 0.9;
-       font-weight:bold; 
+       
        
     }
     
@@ -83,8 +84,12 @@
   border-radius: 10px;
   cursor: pointer;
   color: rgb(43, 43, 43);
-  font-weight:00;
+  font-weight:200;
   
+  }
+  .submit-button:hover {
+    background-color: #9d9e9f;
+    
   }
   
   /* Register button styling */
@@ -95,24 +100,18 @@
     font-size: 14px;
     cursor: pointer;
     margin-top: 10px;
-    
+  } 
+   .register-button:hover {
+    background-color: transparent;
+    color: #ffffff;
     
   }
   
   /* Focus style */
   /* .form-input:focus {
     outline: none;
-    border-color: #132333;
+    border-color:#0080ff;
   } */
   
-  /* Submit button hover style */
-  .submit-button:hover {
-    background-color: #9d9e9f;
-    
-  }
-  
-  /* Register button hover style */
-  .register-button:hover {
-    text-decoration: underline;
-  }
+
   
