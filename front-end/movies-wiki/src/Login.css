@@ -3,7 +3,7 @@
   background-image: linear-gradient(69deg, rgba(82, 82, 82, 0), rgba(179, 179, 179, 0.333), rgba(132, 129, 129, 0.03));
   background-color: rgba(231, 230, 230, 0.604);
   display: flex;
-  /* justify-content: space-between; */
+  justify-content: center;
   min-height: 100vh;
   align-items: center;
   overflow-x: hidden;
@@ -23,8 +23,6 @@
  
  /* Logo styling */
  .login-logo {
-  display:flex;
-  justify-content:space-between;
   width: 50%;
   min-width: 40vh;
   margin-left: -20%;
@@ -33,8 +31,10 @@
  
  /* General styling for login and register form images */
  .login-page img {
-  width: 100%;
-  height: 100%;
+  width: 110%;
+  height: 120%;
+  background-size: cover;
+  background-repeat: no-repeat;
  }
  
  /* Container styling */
@@ -45,8 +45,9 @@
  /* Auth form container styling */
  .auth-form-container, .login-form, .register-from {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  /* min-width: 30vh; */
+  min-width: 30vh;
  }
  
  /* Auth form container styling for larger screens */
