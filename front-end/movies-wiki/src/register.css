@@ -8,25 +8,76 @@
   /* text-align: center; */
   justify-content: center;
 }
+.fullscreen-bg-img {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+/* Login logo styling */
+.login-logo {
+  /* text-align: center;
+  margin-bottom: 5px; */
+  width: 50%;
+  min-width: 40vh;
+  margin-bottom: 0px;
+  margin-top: 20px ;
+  
+  
+  
+}
+
+.login-logo img {
+  width: 40vh;
+  min-width: 50vh;
+  
+}
+
+/* Login form styling */
+.login-form {
+  gap: 1px;
+  display: flex;
+  justify-content: space-between;
+  
+}
+
 
 
 .auth-form-container, .login-form, .register-form {
   display: flex;
   flex-direction: column;
+  justify-content:space-between;
+  /* min-width: 30vh; */
+  font-weight:700;
+  padding:1.1rem;
+  margin-top: -30px ;
+  
+  
+    
   
 }
 @media screen and (min-width: 600px) {
   .auth-form-container {
-    padding: 5rem;
-    border: 1px solid white;
-    border-radius: 10px;
+    padding: 1rem;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    border-radius: 25px;
     margin: 0.5rem;
+    opacity: 0.9; 
+    /* margin-bottom:50px; */
   }
 }
 
 .form-label {
- text-align: left;
- padding: 0.25rem 0;
+  
+  font-weight:bold;
+  margin-bottom: -5px;
+  text-align: left;
+  padding: 0.25rem 0;
+  
+  
 }
 
 input {
@@ -38,30 +89,33 @@ input {
 
 .submit-button {
   border: none;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   padding: 20px;
   border-radius: 10px;
   cursor: pointer;
-  color: grey;
+  color: rgb(43, 43, 43);
+  font-weight:200;
  
 }
 .submit-button:hover {
-  background-color: rgb(233, 233, 233);
+  background-color: #9d9e9f;
   
  
 }
 
-.register-button, .login-here-button {
+.register-button {
  
-  background: none;
-  color: white;
-  text-decoration: underline;
+  background-color: transparent;
+  color: #ffffff;
+  border: none;
+  font-size: 14px;
   cursor: pointer;
-  border-width: 0;
-  margin-top: 10px 
+  margin-top: 10px;
+  text-decoration: underline;
 }
 .register-button:hover {
-  background-color: #7b7b7b;
+  background-color: transparent;
+  color: #ffffff;
 }
 
 /* .login-page { */
