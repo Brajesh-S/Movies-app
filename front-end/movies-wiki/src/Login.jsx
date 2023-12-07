@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from './authContext'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Login1.css';
+import './Login.css';
 
 
 
@@ -76,10 +76,9 @@ const handleLogin = async (userData) => {
     return (
       
         <div className="login-page">
-          <img className="fullscreen-bg-img" src={require("./homepage.jpg")} alt=""/>
-
-          
-          
+         
+          <img className="fullscreen-bg-img" src={require("./homepage.jpg")} alt="" />
+        
           <div className = "auth-form-container">
           <div className="login-logo">
             <img src={require("./Image4.png")} alt=""/>

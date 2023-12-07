@@ -1,96 +1,125 @@
-/* General login page styling */
+/* Login page styling */
 .login-page {
-  background-image: linear-gradient(69deg, rgba(82, 82, 82, 0), rgba(179, 179, 179, 0.333), rgba(132, 129, 129, 0.03));
-  background-color: rgba(231, 230, 230, 0.604);
   display: flex;
-  justify-content: center;
-  min-height: 100vh;
-  align-items: center;
-  overflow-x: hidden;
-  margin-left: 0;
- }
+  flex-direction: column;
+  background-image: linear-gradient(69deg, rgba(82, 82, 82, 0), rgba(179, 179, 179, 0.333), rgba(132, 129, 129, 0.03));
+  display: flex;
+  height: 100vh;
+  width: 100vw;
  
- /* Background image styling */
- .fullscreen-bg-img {
-  object-fit: cover;
-  z-index: -1;
+}
+
+/* Background image styling */
+.fullscreen-bg-img {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
- }
- 
- /* Logo styling */
- .login-logo {
-  width: 50%;
-  min-width: 40vh;
-  margin-left: -20%;
-  overflow-x: hidden;
- }
- 
- /* General styling for login and register form images */
- .login-page img {
-  width: 110%;
-  height: 120%;
-  background-size: cover;
-  background-repeat: no-repeat;
- }
- 
- /* Container styling */
- .content-container {
-  overflow-x: hidden;
- }
- 
- /* Auth form container styling */
- .auth-form-container, .login-form, .register-from {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  
+}
+
+.auth-form-container, .login-form, .register-from {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-width: 30vh;
+  justify-content:space-between;
+  /* min-width: 30vh; */
+  font-weight:700;
+  padding:2rem;
+  padding-bottom: 2rem;
+  
+    
  }
- 
- /* Auth form container styling for larger screens */
- @media screen and (min-width: 600px) {
+@media screen and (min-width: 600px) {
   .auth-form-container {
-     padding: 5rem;
-     border: 1px solid white;
-     border-radius: 10px;
+     padding: 2rem;
+     border: 0.5px solid rgba(255, 255, 255, 0.292);
+     border-radius: 25px;
      margin: 0.5rem;
-     opacity: 0.9;
+     opacity: 0.9; 
+     margin-bottom:50px;
+     
   }
+  
  }
- 
- /* Label styling */
- .form-label {
+/* Login logo styling */
+.login-logo {
+  /* text-align: center;
+  margin-bottom: 5px; */
+  width: 50%;
+  min-width: 40vh;
+  margin-bottom: 0px;
+  
+  
+  
+}
+
+.login-logo img {
+  width: 40vh;
+  min-width: 50vh;
+  
+}
+
+/* Login form styling */
+.login-form {
+  gap: 1px;
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.form-label {
+  
+  font-weight:bold;
+  margin-bottom: -5px;
   text-align: left;
   padding: 0.25rem 0;
- }
- 
- /* Input styling */
- input {
+  
+  
+}
+
+.form-input {
+  
   margin: 0.5rem 0;
   padding: 1rem;
+  /* border: none; */
+  /* border-radius: 10px; */
+  
+}
+
+.submit-button {
+border: none;
+background-color: rgb(255, 255, 255);
+padding: 20px;
+border-radius: 10px;
+cursor: pointer;
+color: rgb(43, 43, 43);
+font-weight:200;
+
+}
+.submit-button:hover {
+  background-color: #9d9e9f;
+  
+}
+
+/* Register button styling */
+.register-button {
+  background-color: transparent;
+  color: #ffffff;
   border: none;
-  border-radius: 10px;
- }
- 
- /* Submit button styling */
- .submit-button {
-  border: none;
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
+  font-size: 14px;
   cursor: pointer;
-  color: grey;
- }
- 
- /* Register button and login here button styling */
- .register-button, .login-here-button {
-  background: none;
-  color: white;
-  text-decoration: underline;
-  cursor: pointer;
-  border-width: 0;
-  margin-top: 10px;
- }
+  /* margin-top: -10px; */
+} 
+ .register-button:hover {
+  background-color: transparent;
+  color: #ffffff;
+  
+}
+
+
+
+
+
