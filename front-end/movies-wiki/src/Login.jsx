@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useAuth } from './authContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 import './Login.css';
 
 export const Login = (props) => {
@@ -9,6 +12,8 @@ export const Login = (props) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { setToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState(null);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -29,6 +34,9 @@ export const Login = (props) => {
 
   const handleLogin = async (userData) => {
     try {
+      setIsLoading(true); // Circular progress
+      setLoginError(null); // Clear previous alert
+
       console.log('Sending user data:', userData);
       const response = await axios.post(
         'http://localhost:3000/api/auth/login',
@@ -54,12 +62,15 @@ export const Login = (props) => {
           navigate('/Dashboard');
         } else {
           console.error('Login failed:', responseData.message);
+          setLoginError(responseData.message); // Set alert message
         }
       } else {
         console.error('Unexpected status code:', response.status);
       }
     } catch (error) {
+      setIsLoading(false); // Circular progress
       console.error('Login failed. An error occurred:', error.message);
+      setLoginError('An error occurred during login.'); // Set alert message
     }
   };
 
@@ -100,8 +111,39 @@ export const Login = (props) => {
             autoComplete="current-password"
           />
           <button type="submit" className="submit-button">
-            Login
+            {isLoading ? (
+              <CircularProgress color="inherit" size={20} />
+            ) : (
+              'Login'
+            )}
           </button>
+          {loginError && (
+            <Stack
+              sx={{
+                width: '100%',
+                marginBottom: '-20px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+              spacing={2}
+              className="error-alert"
+            >
+              <Alert
+                sx={{
+                  backgroundColor: '',
+                  color: '#white',
+                  borderRadius: '10px',
+                  padding: '-10px',
+                  fontSize: '0.78rem',
+                  textAlign: 'center',
+                }}
+                severity="error"
+              >
+                {loginError}
+              </Alert>
+            </Stack>
+          )}
         </form>
         <button
           onClick={() => navigate('/register')}
