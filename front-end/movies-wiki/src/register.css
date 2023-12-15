@@ -118,6 +118,13 @@ input {
   color: #ffffff;
 }
 
+.error-alert {
+  position: relative;
+  font-size: 0.79rem;
+  top: 11px;
+
+}
+
 /* .login-page { */
     /* background-image: linear-gradient(79deg, rgba(0, 0, 0, 0.927), rgb(0, 0, 0.927), rgb(0, 0, 0.927)); */
     /* background-color: rgba(0, 0, 0, 0.936);
