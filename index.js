@@ -5,8 +5,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoute = require("./back-end/routes/auth");
-const userRoute = require('./back-end/routes/users')
-
+const userRoute = require('./back-end/routes/users');
+const moviesRoute = require("./back-end/routes/movies")
+const searchRoute = require('./back-end/routes/searchMovies')
 const errorHandler = require('./shared/middlewares/errorHandler');
 
 dotenv.config();
@@ -28,6 +29,8 @@ mongoose
         
         app.use('/api/auth', authRoute);
         app.use('/api/users',  userRoute);
+        app.use('/api/movies', moviesRoute);
+        app.use('/api/search', searchRoute)
         
         app.use(errorHandler)
 
