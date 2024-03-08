@@ -11,10 +11,10 @@ export const Login = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setToken } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState(null);
-
+  const { login } = useAuth();
+ 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
@@ -58,7 +58,11 @@ export const Login = (props) => {
           responseData.data.accessToken
         ) {
           console.log('Login successful.');
-          setToken(responseData.data.accessToken);
+          const { accessToken, name } = responseData.data;
+          login(accessToken, name);
+          console.log(name,"first name")
+
+          // setToken(responseData.data.accessToken);
           navigate('/Dashboard');
         } else {
           console.error('Login failed:', responseData.message);

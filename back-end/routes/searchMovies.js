@@ -4,6 +4,21 @@ const axios = require('axios');
 
 const TMDB_API_ACCESS_TOKEN = process.env.TMDB_API_ACCESS_TOKEN;
 
+function generateJSONForMovies(movies) {
+    return movies.map(movie => {
+      const { title, name, poster_path, overview, id, vote_average, media_type } = movie;
+      return {
+        id,
+        title,
+        name,
+        posterPath: poster_path,
+        overview,
+        vote_average,
+        media_type
+      };
+    });
+  }
+
 // Search movies
 router.get('/', async (req, res) => {
     console.log('Search route accessed!');
@@ -12,7 +27,7 @@ router.get('/', async (req, res) => {
 
         const options = {
             method: 'GET',
-            url: 'https://api.themoviedb.org/3/search/movie',
+            url: 'https://api.themoviedb.org/3/search/multi?include_adult=false&language=en-US&page=1',
             headers: {
                 accept: 'application/json',
                 Authorization: `Bearer ${TMDB_API_ACCESS_TOKEN}`,

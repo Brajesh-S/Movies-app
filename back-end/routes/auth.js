@@ -12,7 +12,7 @@ const loginRequest = require('../../back-end/models/requests/loginRequest')
 const dotenv = require('dotenv');
 const responseHelper = require('../../shared/helpers/responseHelpers')
 const checkEmailUniqueness = require('../../shared/middlewares/emailValidation');
-
+const checkUsernameUniqueness = require('../../shared/middlewares/nameValidity');
 dotenv.config();
 
 
@@ -24,7 +24,7 @@ const privateKey = fs.readFileSync(privateKeyPath);
 const publicKey = fs.readFileSync(publicKeyPath);
 
 // Register
-router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res, next) => {
+router.post('/register' , checkUsernameUniqueness ,checkEmailUniqueness ,registerRequest, async (req, res, next) => {
     
     try {
         const { firstName, lastName, email, password } = req.body;
@@ -37,7 +37,14 @@ router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res,
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(sanitizedPassword, salt);
         
+        console.log({
+            firstName: sanitizedFirstName,
+            lastName: sanitizedLastName,
+            email: sanitizedEmail,
+            password: hashedPassword,}
+    )
         const newUser = new User({
+
             firstName: sanitizedFirstName,
             lastName: sanitizedLastName,
             email: sanitizedEmail,
@@ -55,10 +62,17 @@ router.post('/register' ,checkEmailUniqueness ,registerRequest, async (req, res,
 
     res.status(201).json(responseUser);
     } catch (err) {
-        next(err);
+        if (err.name === 'MongoError' && err.code === 11000) {
+            // Duplicate key error
+            return res.status(400).json({ error: true, message: 'Email address is already registered.' });
+        } else {
+            // Other errors
+            next(err);
+        }
     }
 });
 app.use(express.json());
+
 // Login
 router.post('/login', loginRequest
    
@@ -93,8 +107,13 @@ router.post('/login', loginRequest
 
 
         // Sending Response with Access token
-        const { password, ...info } = user._doc;
-        const response = responseHelper.formatResponse({ ...info, accessToken }, false, null);
+        const response = responseHelper.formatResponse({ 
+            _id: user._id, 
+            email: user.email, 
+            name: user.firstName, // Include user's name in the response
+            isAdmin: user.isAdmin, 
+            accessToken 
+        }, false, null);
         res.status(200).json(response);
     }catch (err) {
         console.error(err);

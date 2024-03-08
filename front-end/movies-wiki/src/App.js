@@ -23,15 +23,7 @@ function App() {
 
 
   
-  useEffect(() => {
-    axios.get('http://localhost:3000')
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }, []); 
+
 
   useEffect(() => {
     // Check if an access token exists in client-side storage

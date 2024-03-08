@@ -6,8 +6,9 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoute = require("./back-end/routes/auth");
 const userRoute = require('./back-end/routes/users');
-const moviesRoute = require("./back-end/routes/movies")
+const moviesRoute = require("./back-end/routes/movies1")
 const searchRoute = require('./back-end/routes/searchMovies')
+const trailerRoute = require('./back-end/routes/getTrailer')
 const errorHandler = require('./shared/middlewares/errorHandler');
 
 dotenv.config();
@@ -31,6 +32,7 @@ mongoose
         app.use('/api/users',  userRoute);
         app.use('/api/movies', moviesRoute);
         app.use('/api/search', searchRoute)
+        app.use('/api/trailers', trailerRoute);
         
         app.use(errorHandler)
 
@@ -40,5 +42,5 @@ mongoose
     })
     .catch((err) => console.log(err));
 
-
+    
 
